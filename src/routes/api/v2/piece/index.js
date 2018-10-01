@@ -2,81 +2,6 @@
 const router = require('express').Router();
 const PieceModel = require('../../../../models/v2/PieceModel.js');
 
-function sortList(list, sort) {
-  list.sort((a, b) => {
-    if (a.x < b.x) return -1 * sort.x;
-    if (a.x > b.x) return 1 * sort.x;
-    if (a.y < b.y) return -1 * sort.y;
-    if (a.y > b.y) return 1 * sort.y;
-    return 0; // for lint
-  });
-  return list;
-}
-
-function checkList(list, key, result) {
-  const newList = [];
-  if (key === 'n' || key === 's') {
-    for (let i = 0; i < list.length; i += 1) {
-      if (i === 0) {
-        newList.push(list[i]);
-      } else if (list[i].userId !== result.userId
-        && Math.abs(list[i].y - list[i - 1].y) === 1) {
-        newList.push(list[i]);
-      } else if (list[i].userId === result.userId
-        && Math.abs(list[i].y - list[i - 1].y) === 1) {
-        return newList;
-      } else {
-        newList.length = 0;
-        return newList;
-      }
-    }
-  } else if (key === 'w' || key === 'e') {
-    for (let i = 0; i < list.length; i += 1) {
-      if (i === 0) {
-        newList.push(list[i]);
-      } else if (i > 0 && list[i].userId !== result.userId
-        && Math.abs(list[i].x - list[i - 1].x) === 1) {
-        newList.push(list[i]);
-      } else if (i > 0 && list[i].userId === result.userId
-        && Math.abs(list[i].x - list[i - 1].x) === 1) {
-        return newList;
-      } else {
-        newList.length = 0;
-        return newList;
-      }
-    }
-  } else {
-    for (let i = 0; i < list.length; i += 1) {
-      if (i === 0) {
-        newList.push(list[i]);
-      } else if (i > 0 && list[i].userId !== result.userId
-        && (Math.abs(list[i].x - list[i - 1].x) === 1)
-        && (Math.abs(list[i].y - list[i - 1].y) === 1)) {
-        newList.push(list[i]);
-      } else if (i > 0 && list[i].userId === result.userId
-        && (Math.abs(list[i].x - list[i - 1].x) === 1)
-        && (Math.abs(list[i].y - list[i - 1].y) === 1)) {
-        return newList;
-      } else {
-        newList.length = 0;
-        return newList;
-      }
-    }
-  }
-  return newList;
-}
-
-function turnOverPiece(list, result) {
-  PieceModel.addPiece(result);
-  list.forEach((p) => {
-    if (p.userId !== result.userId) {
-      const updatePiece = { x: p.x, y: p.y, userId: result.userId };
-      PieceModel.updatePieces(updatePiece);
-    }
-  });
-}
-
-
 // for CORS
 router.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -180,23 +105,23 @@ router.route('/')
       if ((key === 'n' && isOtherPiece.n && isOwnPiece.n)
         || (key === 'w' && isOtherPiece.w && isOwnPiece.w)
         || (key === 'nw' && isOtherPiece.nw && isOwnPiece.nw)) {
-        let list = sortList(turnlist[key], { x: -1, y: -1 });
-        list = checkList(list, key, result);
-        turnOverPiece(list, result);
+        let list = PieceModel.sortList(turnlist[key], { x: -1, y: -1 });
+        list = PieceModel.checkList(list, key, result);
+        PieceModel.turnOverPiece(list, result);
       } else if ((key === 'e' && isOtherPiece.e && isOwnPiece.e)
         || (key === 's' && isOtherPiece.s && isOwnPiece.s)
         || (key === 'se' && isOtherPiece.se && isOwnPiece.se)) {
-        let list = sortList(turnlist[key], { x: 1, y: 1 });
-        list = checkList(list, key, result);
-        turnOverPiece(list, result);
+        let list = PieceModel.sortList(turnlist[key], { x: 1, y: 1 });
+        list = PieceModel.checkList(list, key, result);
+        PieceModel.turnOverPiece(list, result);
       } else if (key === 'ne' && isOtherPiece.ne && isOwnPiece.ne) {
-        let list = sortList(turnlist[key], { x: 1, y: -1 });
-        list = checkList(list, key, result);
-        turnOverPiece(list, result);
+        let list = PieceModel.sortList(turnlist[key], { x: 1, y: -1 });
+        list = PieceModel.checkList(list, key, result);
+        PieceModel.turnOverPiece(list, result);
       } else if (key === 'sw' && isOtherPiece.sw && isOwnPiece.sw) {
-        let list = sortList(turnlist[key], { x: -1, y: 1 });
-        list = checkList(list, key, result);
-        turnOverPiece(list, result);
+        let list = PieceModel.sortList(turnlist[key], { x: -1, y: 1 });
+        list = PieceModel.checkList(list, key, result);
+        PieceModel.turnOverPiece(list, result);
       }
       return true; // for lint
     });
