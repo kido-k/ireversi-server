@@ -1,18 +1,9 @@
 const pieces = [];
+const waitTime = 3000; // remainingに設定する待ち時間
 
 module.exports = {
-  addPiece(piece) {
+  addPiece(piece) { // 盤面にコマを追加する
     pieces.push(piece);
-  },
-  updatePieces(piece) {
-    pieces.find((p, i) => {
-      if (p.x === piece.x && p.y === piece.y) {
-        pieces.splice(i, 1);
-        pieces.push(piece);
-        return pieces;
-      }
-      return false;
-    });
   },
   deletePieces() {
     pieces.length = 0;
@@ -66,5 +57,25 @@ module.exports = {
   },
   seeNext(array, nextPieceX, nextPieceY) {
     return array.find(p => p.x === nextPieceX && p.y === nextPieceY);
+  },
+  array2Standby(array) {
+    const results = [];
+    const status = true;
+    const matchArray = this.array2Matchers(array);
+    for (let i = 0; i < matchArray.length; i += 1) {
+      const result = {};
+      result.status = status;
+      const match = matchArray[i];
+      const standby = {
+        remaining: 3000,
+        piece: match,
+      };
+      result.standby = standby;
+      results.push(result);
+    }
+    return results;
+  },
+  getWaitTime() {
+    return waitTime;
   },
 };
