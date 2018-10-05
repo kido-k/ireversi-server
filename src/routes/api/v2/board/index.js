@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const boardCtrl = require('../../../../models/v2/boardController.js');
+const boardCtrl = require('../../../../models/v2/BoardStore.js');
 const calcCandidate = require('./calcCandidate.js');
 const calcScore = require('./calcScore.js');
 router.use('/specified_range', require('./specified_range.js'));

@@ -1,5 +1,5 @@
 const chai = require('chai');
-const PieceModel = require('../../../../../src/models/v2/PieceModel.js');
+const PieceModel = require('../../../../../src/models/v2/PieceStore.js');
 const app = require('../../../../../src/routes/app.js');
 
 const basePath = '/api/v2/piece/';

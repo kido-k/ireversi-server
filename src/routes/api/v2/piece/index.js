@@ -1,6 +1,6 @@
 
 const router = require('express').Router();
-const PieceModel = require('../../../../models/v2/PieceModel.js');
+const PieceModel = require('../../../../models/v2/PieceStore.js');
 
 const dirXY = [
   [0, 1],
